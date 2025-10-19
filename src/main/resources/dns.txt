@@ -1,2 +1,3 @@
-serveur1.uvsq.fr 192.168.0.1 
-serveur2.uvsq.fr 192.168.0.2 
+serveur2.uvsq.fr 192.168.0.2
+serveur3.uvsq.fr 192.168.0.3
+serveur1.uvsq.fr 192.168.0.1

@@ -1,9 +1,11 @@
 package fr.uvsq.dns;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.Scanner;
 
 public class DnsTUI {
-    private final java.util.Scanner scanner = new java.util.Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     // Lit la prochaine ligne de commande
     public String nextLine() {
@@ -19,8 +21,13 @@ public class DnsTUI {
     // La boucle principale du programme
     public void start() {
         Dns dns;
+
         try {
-            dns = new Dns("src/main/resources/dns.txt");
+            // 🔹 Lecture du fichier de configuration
+            Config config = new Config("config.properties");
+            String cheminFichierDns = config.get("dns.file");
+            dns = new Dns(cheminFichierDns);
+
         } catch (IOException e) {
             affiche("Erreur de chargement du fichier DNS : " + e.getMessage());
             return;
@@ -34,16 +41,18 @@ public class DnsTUI {
             }
 
             Commande cmd = new Commande(ligne);
+            String nom = cmd.getNom().toLowerCase();
+            String[] args = cmd.getArgs();
 
-            switch (cmd.getNom().toLowerCase()) {
+            switch (nom) {
                 case "getip":
-                    if (cmd.getArgs().length != 1) {
+                    if (args.length != 1) {
                         affiche("Usage : getip <nom_machine>");
                         break;
                     }
                     try {
-                        NomMachine nom = new NomMachine(cmd.getArgs()[0]);
-                        DnsItem item = dns.getItem(nom);
+                        NomMachine nomMachine = new NomMachine(args[0]);
+                        DnsItem item = dns.getItem(nomMachine);
                         if (item == null)
                             affiche("Nom machine introuvable.");
                         else
@@ -54,12 +63,12 @@ public class DnsTUI {
                     break;
 
                 case "getnom":
-                    if (cmd.getArgs().length != 1) {
+                    if (args.length != 1) {
                         affiche("Usage : getnom <adresse_ip>");
                         break;
                     }
                     try {
-                        AdresseIP ip = new AdresseIP(cmd.getArgs()[0]);
+                        AdresseIP ip = new AdresseIP(args[0]);
                         DnsItem item = dns.getItem(ip);
                         if (item == null)
                             affiche("Adresse IP introuvable.");
@@ -71,14 +80,14 @@ public class DnsTUI {
                     break;
 
                 case "add":
-                    if (cmd.getArgs().length != 2) {
+                    if (args.length != 2) {
                         affiche("Usage : add <nom_machine> <adresse_ip>");
                         break;
                     }
                     try {
-                        NomMachine nom = new NomMachine(cmd.getArgs()[0]);
-                        AdresseIP ip = new AdresseIP(cmd.getArgs()[1]);
-                        dns.addItem(ip, nom);
+                        NomMachine nomMachine = new NomMachine(args[0]);
+                        AdresseIP ip = new AdresseIP(args[1]);
+                        dns.addItem(ip, nomMachine);
                         affiche("Ajout effectué.");
                     } catch (IllegalArgumentException ex) {
                         affiche("Nom machine ou adresse IP invalide.");
@@ -87,18 +96,31 @@ public class DnsTUI {
                     }
                     break;
 
-                case "list":
-                    if (cmd.getArgs().length != 1) {
-                        affiche("Usage : list <domaine>");
+                case "ls":
+                    boolean triParAdresse = false;
+                    String domaine;
+
+                    if (args.length == 1) {
+                        domaine = args[0];
+                    } else if (args.length == 2 && args[0].equals("-a")) {
+                        triParAdresse = true;
+                        domaine = args[1];
+                    } else {
+                        affiche("Usage : ls [-a] <domaine>");
                         break;
                     }
-                    String domaine = cmd.getArgs()[0];
+
                     var items = dns.getItems(domaine);
                     if (items.isEmpty()) {
                         affiche("Aucun élément trouvé pour ce domaine.");
                     } else {
+                        if (triParAdresse) {
+                            items.sort(Comparator.comparing(d -> d.getAdresseIP().toString()));
+                        } else {
+                            items.sort(Comparator.comparing(d -> d.getNomMachine().getNom()));
+                        }
                         for (DnsItem di : items) {
-                            affiche(di.toString());
+                            affiche(di.getAdresseIP() + " " + di.getNomMachine());
                         }
                     }
                     break;
