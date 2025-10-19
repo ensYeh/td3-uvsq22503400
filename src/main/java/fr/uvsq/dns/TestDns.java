@@ -16,6 +16,10 @@ public class TestDns {
             DnsItem item2 = dns.getItem(ip);
             System.out.println("Résultat pour " + ip + " : " + item2);
 
+        } catch (java.io.IOException e) {
+            System.err.println("Erreur de lecture du fichier : " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.err.println("Erreur de format dans les données : " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

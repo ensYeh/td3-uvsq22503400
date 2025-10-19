@@ -20,6 +20,7 @@ public class Dns {
         List<String> lignes = Files.readAllLines(fichierBase);
         for (String ligne : lignes) {
             if (ligne.trim().isEmpty()) continue;
+            System.out.println("Chargement ligne : " + ligne);  // Pour debug
             String[] parts = ligne.split("\\s+");
             if (parts.length != 2) continue; // ignorer ligne mal formée
 
