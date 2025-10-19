@@ -7,27 +7,26 @@ import java.util.Scanner;
 public class DnsTUI {
     private final Scanner scanner = new Scanner(System.in);
 
-    // Lit la prochaine ligne de commande
+    // Lecture de la ligne de commande
     public String nextLine() {
         System.out.print("> ");
         return scanner.nextLine().trim();
     }
 
-    // Affiche un message
+    // Affichage d’un message
     public void affiche(String message) {
         System.out.println(message);
     }
 
-    // La boucle principale du programme
+    // Boucle principale
     public void start() {
         Dns dns;
 
         try {
-            // 🔹 Lecture du fichier de configuration
+            // Chargement du fichier via config.properties
             Config config = new Config("config.properties");
             String cheminFichierDns = config.get("dns.file");
             dns = new Dns(cheminFichierDns);
-
         } catch (IOException e) {
             affiche("Erreur de chargement du fichier DNS : " + e.getMessage());
             return;
@@ -40,7 +39,12 @@ public class DnsTUI {
                 break;
             }
 
+            // On crée la commande à partir de la ligne saisie
             Commande cmd = new Commande(ligne);
+
+            // 🔍 Ligne de débogage : on affiche ce qui est lu
+            System.out.println("[DEBUG] Commande lue : '" + cmd.getNom() + "'");
+
             String nom = cmd.getNom().toLowerCase();
             String[] args = cmd.getArgs();
 
@@ -131,8 +135,8 @@ public class DnsTUI {
         }
     }
 
-    // Méthode main pour lancer la TUI
     public static void main(String[] args) {
         new DnsTUI().start();
     }
 }
+
