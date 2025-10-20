@@ -1,4 +1,5 @@
 serveur2.uvsq.fr 192.168.0.2
 192.168.0.4 nouveau.uvsq.fr
 serveur3.uvsq.fr 192.168.0.3
+pikachu.uvsq.fr 193.51.25.24
 serveur1.uvsq.fr 192.168.0.1
