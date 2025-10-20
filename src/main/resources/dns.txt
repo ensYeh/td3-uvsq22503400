@@ -1,5 +1,7 @@
 serveur2.uvsq.fr 192.168.0.2
+poste.uvsq.fr 193.51.31.154
 192.168.0.4 nouveau.uvsq.fr
 serveur3.uvsq.fr 192.168.0.3
 pikachu.uvsq.fr 193.51.25.24
 serveur1.uvsq.fr 192.168.0.1
+ecampus.uvsq.fr 193.51.25.12

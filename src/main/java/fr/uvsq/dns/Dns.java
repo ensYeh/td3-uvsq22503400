@@ -24,8 +24,8 @@ public class Dns {
             String[] parts = ligne.split("\\s+");
             if (parts.length != 2) continue; // ignorer ligne mal formée
 
-            AdresseIP ip = new AdresseIP(parts[1]);
             NomMachine nom = new NomMachine(parts[0]);
+            AdresseIP ip = new AdresseIP(parts[1]);
 
             DnsItem item = new DnsItem(ip, nom);
             mapIP.put(ip, item);
@@ -39,6 +39,14 @@ public class Dns {
 
     public DnsItem getItem(NomMachine nom) {
         return mapNom.get(nom);
+    }
+
+    public NomMachine getNomMachine(AdresseIP ip) {
+        DnsItem item = mapIP.get(ip);
+        if (item != null) {
+            return item.getNomMachine();
+        }
+        return null;
     }
 
     public List<DnsItem> getItems(String domaine) {
